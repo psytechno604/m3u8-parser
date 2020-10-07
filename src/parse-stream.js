@@ -428,6 +428,20 @@ export default class ParseStream extends Stream {
         this.trigger('data', event);
         return;
       }
+      match = (/^#EXT-SCTE35:CUE-OUT=YES?(.*)?$/).exec(newLine);
+      if (match) {
+        event = {
+          type: 'tag',
+          tagType: 'cue-out'
+        };
+        if (match[1]) {
+          event.data = match[1];
+        } else {
+          event.data = '';
+        }
+        this.trigger('data', event);
+        return;
+      }
       match = (/^#EXT-X-CUE-IN:?(.*)?$/).exec(newLine);
       if (match) {
         event = {
@@ -442,7 +456,20 @@ export default class ParseStream extends Stream {
         this.trigger('data', event);
         return;
       }
-
+      match = (/^#EXT-SCTE35:CUE-IN=YES?(.*)?$/).exec(newLine);
+      if (match) {
+        event = {
+          type: 'tag',
+          tagType: 'cue-in'
+        };
+        if (match[1]) {
+          event.data = match[1];
+        } else {
+          event.data = '';
+        }
+        this.trigger('data', event);
+        return;
+      }
       // unknown tag type
       this.trigger('data', {
         type: 'tag',
